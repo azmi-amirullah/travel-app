@@ -1,26 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Login from './pages/Login/Login'
+import Dashboard from './pages/Dashboard/Dashboard'
+import Error404 from './components/Error404'
+import Profile from './pages/Profle/Profile'
+import Users from './pages/Users/Users'
+import { useAppSelector } from './stores/hook'
 
 function App() {
+  const user = useAppSelector((state) => state.user)
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        {user.roles.permission?.Destination.Read && (
+          <Route path="/" element={<Dashboard />} />
+        )}
+        <Route path="/profile" element={<Profile />} />
+        {user.roles.permission?.User.Read && (
+          <Route path="/users" element={<Users />} />
+        )}
+        <Route path="*" element={<Error404 />} />
+      </Routes>
+    </BrowserRouter>
+  )
 }
 
-export default App;
+export default App
